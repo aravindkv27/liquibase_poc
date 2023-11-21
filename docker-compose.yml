@@ -1,0 +1,25 @@
+version: '3'
+services:
+  liquibase-db1:
+    image: liquibase/liquibase
+    volumes:
+      - /var/lib/jenkins/workspace/DAC_liquibase:/liquibase/changelog
+      - /var/lib/jenkins/workspace/DAC_liquibase/liquibase_poc/liquibasedep:/liquibase/lib
+    environment:
+      - URL=${DATABASE1_URL}
+      - USERNAME=${DATABASE1_USERNAME}
+      - PASSWORD=${DATABASE1_PASSWORD}
+      - DRIVER=${DATABASE1_DRIVER}
+    command: --url=${URL} --changeLogFile=/liquibase/changelog/changelog.xml --username=${USERNAME} --password=${PASSWORD} --driver=${DRIVER} update
+
+  liquibase-db2:
+    image: liquibase/liquibase
+    volumes:
+      - /var/lib/jenkins/workspace/DAC_liquibase:/liquibase/changelog
+      - /var/lib/jenkins/workspace/DAC_liquibase/liquibase_poc/liquibasedep:/liquibase/lib
+    environment:
+      - URL=${DATABASE2_URL}
+      - USERNAME=${DATABASE2_USERNAME}
+      - PASSWORD=${DATABASE2_PASSWORD}
+      - DRIVER=${DATABASE2_DRIVER}
+    command: --url=${URL} --changeLogFile=/liquibase/changelog/changelog.xml --username=${USERNAME} --password=${PASSWORD} --driver=${DRIVER} update
