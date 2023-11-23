@@ -29,7 +29,7 @@ pipeline {
           // echo "logFile"
           def fileName = "changeset_error.txt"  // Update the file name as needed
 
-          sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/${database_names[i]} --driver=$DRIVER_NAME --changeLogFile=${database_names[i]}/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD tag --tag=${database_names[i]}-${highestNumber}"
+          // sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/${database_names[i]} --driver=$DRIVER_NAME --changeLogFile=${database_names[i]}/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD tag --tag=${database_names[i]}-${highestNumber}"
 
           for (int i = 0; i < database_names.size(); ++i) {
             sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/${database_names[i]} --driver=$DRIVER_NAME --changeLogFile=${database_names[i]}/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD status"
