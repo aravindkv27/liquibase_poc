@@ -25,9 +25,11 @@ pipeline {
 
           def buildDirectories = sh(script: 'ls -d /var/lib/jenkins/jobs/${JOB_NAME}/builds/*/ | grep -o "[0-9]*" | sort -n', returnStdout: true).trim().readLines()
           def highestNumber = buildDirectories.last()
-          // sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/${database_names[i]} --driver=$DRIVER_NAME --changeLogFile=${database_names[i]}/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD tag --tag=${database_names[i]}-${highestNumber}"
+          def logFile = "/var/lib/jenkins/jobs/${JOB_NAME}/builds/${highestNumber}/log"  // Set the log file path
+          // echo "logFile"
+          def fileName = "changeset_error.txt"  // Update the file name as needed
 
-
+          sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/${database_names[i]} --driver=$DRIVER_NAME --changeLogFile=${database_names[i]}/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD tag --tag=${database_names[i]}-${highestNumber}"
 
           for (int i = 0; i < database_names.size(); ++i) {
             sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/${database_names[i]} --driver=$DRIVER_NAME --changeLogFile=${database_names[i]}/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD status"
@@ -36,22 +38,13 @@ pipeline {
 
           }
         }
+        
       }
+
+
     }
 
-    //  stage('Status') {
-    //    steps {
-    //      sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/demo1 --driver=$DRIVER_NAME --changeLogFile=Demo1/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD status"
-    //      sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/demo_system1 --driver=$DRIVER_NAME --changeLogFile=Demo1/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD status"
-    //    }
-    //  }
-    //  stage('Update') {
-    //    steps {
-    //      sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/demo1 --driver=$DRIVER_NAME --changeLogFile=Demo_system1/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD update"
-    //      sh "docker run --rm -v /var/lib/jenkins/workspace/DAC_liquibase/changelogs/:/liquibase/changelog -v  /var/lib/jenkins/workspace/DAC_liquibase/liquibasedep/:/liquibase/lib liquibase/liquibase --url=${DATABASE_RDS_EP}/demo_system1 --driver=$DRIVER_NAME --changeLogFile=Demo_system1/main.xml --username=$DATABASE_RDS_USR --password=$DATABASE_RDS_PSD update"
-
-    //   }
-    //  }
+   
   }
   
 }
